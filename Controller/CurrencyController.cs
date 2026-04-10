@@ -33,9 +33,25 @@ namespace DbOperationWithEFCoreApp.Controller
         }
 
         [HttpGet("{name:string}")]
-        public async Task<IActionResult> GetAllCurrencyByIdAsync([FromRoute] string name)
+        public async Task<IActionResult> GetAllCurrencyByNameAsync([FromRoute] string name)
         {
             var result = await _appDbContext.Currencies.Where(x => x.Title == name).FirstOrDefaultAsync();
+            return Ok(result);
+
+        }
+
+        [HttpGet("{name:string}/{description:string}")]
+        public async Task<IActionResult> GetAllCurrencyByNameDescriptionAsync([FromRoute] string name, [FromRoute] string description)
+        {
+            var result = await _appDbContext.Currencies.FirstOrDefaultAsync(x => x.Title == name && x.Description == description);
+            return Ok(result);
+
+        }
+
+        [HttpPost("all")]
+        public async Task<IActionResult> GetAllCurrenciesByFilterAsync([FromBody] List<int> ids)
+        {
+            var result = await _appDbContext.Currencies.Where(x=> ids.Contains(x.Id)).ToListAsync();
             return Ok(result);
 
         }
